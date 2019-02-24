@@ -5,84 +5,6 @@
 #include "Graph_Algorithms.h"
 
 
-bool Dijkstra( int begin, int end, int arr[N * M][N * M] )
-{
-  int visited_points[N * M] = { 0 }, distance[N * M], to_visit[N * M];
-  visited_points[begin] = 1; // 0 - not mentioned, 1 - mentioned, 2 - visited
-  for (int i = 0; i < N * M; i++)
-    distance[i] = (i != begin) * N * M; // sets distance between points 
-                                        // 0 distance at the beginning point, N * M at the rest
-
-  int check_point = begin;
-  int visited_amount = 0, amount = 0;
-
-  for (int i = 0; i < N * M; i++)
-  {
-    for (int j = 0; j < N * M; j++)
-      if (arr[check_point][j])
-      {
-        if (!visited_points[j])
-        {
-          visited_points[j] = 1;
-          to_visit[amount++] = j;
-        }
-        if (distance[j] > distance[check_point] + 1)
-          distance[j] = distance[check_point] + 1;
-      }
-    visited_points[check_point] = 2;
-    check_point = to_visit[visited_amount++];
-  }
-
-  int sum = 0;
-
-  for (int i = 0; i < N * M; i++)
-    sum += visited_points[i];
-
-  return (sum == 2 * M * N);
-}
-
-
-
-int Li( int begin, int end, int arr[N * M][N * M] )
-{
-  int visited_points[N * M] = { 0 }, distance[N * M] = { 0 }, to_visit[N * M];
-  visited_points[begin] = 1; // 0 - not mentioned, 1 - mentioned, 2 - visited
-
-  for (int i = 0; i < N * M; i++)
-    to_visit[i] = -1;
-
-  int check_point = begin, visited_amount = 0, amount = 0;
-
-  for (int i = 0; i < N * M; i++)
-  {
-    for (int j = 0; j < N * M; j++)
-      if (arr[check_point][j])
-        if (!visited_points[j])
-        {
-          visited_points[j] = 1;
-          to_visit[amount++] = j;
-          distance[j] = distance[check_point] + 1;
-        }
-    visited_points[check_point] = 2;
-    check_point = to_visit[visited_amount++];
-    if (check_point < 0)
-      break;
-  }
-
-  for (int i = 0; i < N * M; i++)
-  {
-    if (visited_points[i] == 2)
-      printf( "%5d", distance[i] );
-    else
-      printf( "    *" );
-    if (!((i + 1) % M))
-      printf( "\n" );
-  }
-  printf( "\n\n" );
-  return distance[end];
-}
-
-
 int* merge_trees( Edge** mst, const int edge_amount, int mst_prev_edge, int mst_edge, int* leader, const int vertex_amount, int& leader_amount )
 {
   int initial_leader_amount = leader_amount;
@@ -157,14 +79,8 @@ Cell** Maze_Builder( int A, int B )
     }
   }
 
-
-  //  for (int i = 0; i < edges_amount; i++)
-    //  printf( "%d-th edge is from %d to %d with weight %d\n", i, edges[i].start, edges[i].end, edges[i].weight );
-    //printf( "\n\n" );
-
-
+  
   int *links = new int[edges_amount] {0};
-
 
   while (leader_amount > 1)
   {
@@ -186,26 +102,16 @@ Cell** Maze_Builder( int A, int B )
 
         // Adds an available vertex to go to
         paths[start]->connected_vertexes[paths[start]->connected_vertex_amount++] = end;
-        printf("\nAdded %d vertex to the available paths of %d vertex\n Connected vertexes to %d: ", end, start, start );
-
-        for (int i = 0; i < paths[start]->connected_vertex_amount; i++)
-          printf("%d   ", paths[start]->connected_vertexes[i] );
-
+     
         // Adds an available vertex to go to
         paths[end]->connected_vertexes[paths[end]->connected_vertex_amount++] = start;
-        printf( "\nAdded %d vertex to the available paths of %d vertex\n Connected vertexes to %d: ", start, end, end );
-
-        for (int i = 0; i < paths[end]->connected_vertex_amount; i++)
-          printf( "%d   ", paths[end]->connected_vertexes[i] );
-
+     
         links[cheapest] = 1;
-        printf( "\n\nAdded %d-th edge that is from %d to %d with weight %d\n", cheapest, start, end, edges[cheapest]->weight );
       }
     }
     delete[] trees;
     trees = merge_trees( mst, edges_amount, mst_prev_edges, mst_edges, leader, A * B, leader_amount ); // merge components with a common edge into one
   }
-  printf( "\n\n" );
 
   for (int i = 0; i < additional_edges; i++)
   {
@@ -220,25 +126,15 @@ Cell** Maze_Builder( int A, int B )
 
       // Adds an available vertex to go to
       paths[start]->connected_vertexes[paths[start]->connected_vertex_amount++] = end;
-      printf("\nAdded %d vertex to the available paths of %d vertex\n Connected vertexes to %d: ", end, start, start);
-
-      for (int i = 0; i < paths[start]->connected_vertex_amount; i++)
-        printf("%d   ", paths[start]->connected_vertexes[i]);
-
+      
       // Adds an available vertex to go to
       paths[end]->connected_vertexes[paths[end]->connected_vertex_amount++] = start;
-      printf("\nAdded %d vertex to the available paths of %d vertex\n Connected vertexes to %d: ", start, end, end);
-
-      for (int i = 0; i < paths[end]->connected_vertex_amount; i++)
-        printf("%d   ", paths[end]->connected_vertexes[i]);
 
       links[new_edge] = 1;
-      printf("\n\nAdded %d-th edge that is from %d to %d with weight %d\n", new_edge, start, end, edges[new_edge]->weight);
     }
   }
-  printf( "\n\n" );
 
-  // Massive deleteiton of allocated memory
+  // Massive deletetion of allocated memory
   for (int i = 0; i < 2 * A * B - A - B; i++)
     delete[] edges[i];
   delete[] edges;
