@@ -8,7 +8,6 @@
 #include "Graph_Algorithms.h"
 
 
-
 void Game( Cell** paths, int A, int B )
 {
   srand(time(NULL));
