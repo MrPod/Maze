@@ -8,6 +8,24 @@
 #include "Graph_Algorithms.h"
 
 
+void Movement(Cell* path, char* direction, int& initial_vertex, int change)
+{
+  bool consictence = 0;
+
+  std::cout << "U'r trying to go "<< direction << "\n";
+  for (int i = 0; i < path->connected_vertex_amount; i++)
+    if (path->connected_vertexes[i] == initial_vertex + change)
+      consictence = 1;
+  if (consictence)
+  {
+    initial_vertex += change;
+    std::cout << "Now u're at the point #" << initial_vertex << "\n\n";
+  }
+  else
+    std::cout << "There is no way " << direction << "\n\n";
+}
+
+
 void Game( Cell** paths, int A, int B )
 {
   srand(time(NULL));
@@ -50,59 +68,19 @@ void Game( Cell** paths, int A, int B )
     {
       case 119:
       case 72:
-        std::cout << "U'r trying to go up\n";
-        for (int i = 0; i < paths[initial_vertex]->connected_vertex_amount; i++)
-          if (paths[initial_vertex]->connected_vertexes[i] == initial_vertex - B)
-            path = 1;
-        if (path)
-        {
-          initial_vertex -= B;
-          std::cout << "Now u're at the point #" << initial_vertex << "\n\n";
-        }
-        else
-          std::cout << "There is no way up\n\n";
+        Movement(paths[initial_vertex], "up", initial_vertex, -B);
         break;
       case 97:
       case 75:
-        std::cout << "U'r trying to go left\n";
-        for (int i = 0; i < paths[initial_vertex]->connected_vertex_amount; i++)
-          if (paths[initial_vertex]->connected_vertexes[i] == initial_vertex - 1)
-            path = 1;
-        if (path)
-        {
-          initial_vertex--;
-          std::cout << "Now u're at the point #" << initial_vertex << "\n\n";
-        }
-        else
-          std::cout << "There is no way left\n\n";
+        Movement(paths[initial_vertex], "left", initial_vertex, -1);
         break;
       case 115:
       case 80:
-        std::cout << "U'r trying to go down\n";
-        for (int i = 0; i < paths[initial_vertex]->connected_vertex_amount; i++)
-          if (paths[initial_vertex]->connected_vertexes[i] == initial_vertex + B)
-            path = 1;
-        if (path)
-        {
-          initial_vertex += B;
-          std::cout << "Now u're at the point #" << initial_vertex << "\n\n";
-        }
-        else
-          std::cout << "There is no way down\n\n";
+        Movement(paths[initial_vertex], "down", initial_vertex, B);
         break;
       case 100:
       case 77:
-        std::cout << "U'r trying to go right\n";
-        for (int i = 0; i < paths[initial_vertex]->connected_vertex_amount; i++)
-          if (paths[initial_vertex]->connected_vertexes[i] == initial_vertex + 1)
-            path = 1;
-        if (path)
-        {
-          initial_vertex++;
-          std::cout << "Now u're at the point #" << initial_vertex << "\n\n";
-        }
-        else
-          std::cout << "There is no way right\n\n";
+        Movement(paths[initial_vertex], "right", initial_vertex, 1);
         break;
       default:
         std::cout << "U hit the wrong button!\n\n";
